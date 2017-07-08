@@ -34,6 +34,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import dalvik.system.DexClassLoader;
+
 /**
  * ARouter core (Facade patten)
  *
@@ -66,6 +68,11 @@ final class _ARouter {
         // if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
         //     application.registerActivityLifecycleCallbacks(new AutowiredLifecycleCallback());
         // }
+        return true;
+    }
+
+    protected static synchronized boolean loadClassFromApk(String apkPath, DexClassLoader classLoader){
+        LogisticsCenter.loadApkRouterClass(apkPath, classLoader);
         return true;
     }
 

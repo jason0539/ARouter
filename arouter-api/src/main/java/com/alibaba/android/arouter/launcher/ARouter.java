@@ -12,6 +12,8 @@ import com.alibaba.android.arouter.utils.Consts;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+import dalvik.system.DexClassLoader;
+
 /**
  * ARouter facade
  *
@@ -45,6 +47,19 @@ public final class ARouter {
             }
 
             _ARouter.logger.info(Consts.TAG, "ARouter init over.");
+        }
+    }
+
+    /**
+     * 加载插件apk中的路由
+     * @param apkPath 插件apk路径
+       @param classLoader 插件的classloader（否则默认使用宿主classloader会加载失败）
+     */
+    public static void loadClassFromApk(String apkPath, DexClassLoader classLoader){
+        if (hasInit) {
+            _ARouter.loadClassFromApk(apkPath, classLoader);
+        }else {
+            throw new RuntimeException("加载插件apk路由之前，请先初始化路由框架");
         }
     }
 

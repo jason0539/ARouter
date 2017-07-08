@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import dalvik.system.DexClassLoader;
+
 import static com.alibaba.android.arouter.launcher.ARouter.logger;
 import static com.alibaba.android.arouter.utils.Consts.DOT;
 import static com.alibaba.android.arouter.utils.Consts.ROUTE_ROOT_PAKCAGE;
@@ -83,6 +85,30 @@ public class LogisticsCenter {
             }
         } catch (Exception e) {
             throw new HandlerException(TAG + "ARouter init logistics center exception! [" + e.getMessage() + "]");
+        }
+    }
+
+    /**
+     * 从插件apk中加载目标类
+     */
+    public synchronized static void loadApkRouterClass(String apkPath, DexClassLoader classLoader) throws HandlerException {
+        try {
+            List<String> classFileNames = ClassUtils.getApkClass(apkPath, ROUTE_ROOT_PAKCAGE);
+
+            for (String className : classFileNames) {
+                if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
+                    // This one of root elements, load root.
+                    ((IRouteRoot) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(Warehouse.groupsIndex);
+                } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTORS)) {
+                    // Load interceptorMeta
+                    ((IInterceptorGroup) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(Warehouse.interceptorsIndex);
+                } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_PROVIDERS)) {
+                    // Load providerIndex
+                    ((IProviderGroup) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(Warehouse.providersIndex);
+                }
+            }
+        } catch (Exception e) {
+            throw new HandlerException(TAG + "ARouter loadApkRouterClass logistics center exception! [" + e.getMessage() + "]");
         }
     }
 
