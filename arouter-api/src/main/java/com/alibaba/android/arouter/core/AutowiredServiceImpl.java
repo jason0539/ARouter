@@ -10,6 +10,8 @@ import com.alibaba.android.arouter.facade.template.ISyringe;
 import java.util.ArrayList;
 import java.util.List;
 
+import dalvik.system.DexClassLoader;
+
 import static com.alibaba.android.arouter.utils.Consts.SUFFIX_AUTOWIRED;
 
 /**
@@ -38,6 +40,23 @@ public class AutowiredServiceImpl implements AutowiredService {
                 ISyringe autowiredHelper = classCache.get(className);
                 if (null == autowiredHelper) {  // No cache.
                     autowiredHelper = (ISyringe) Class.forName(instance.getClass().getName() + SUFFIX_AUTOWIRED).getConstructor().newInstance();
+                }
+                autowiredHelper.inject(instance);
+                classCache.put(className, autowiredHelper);
+            }
+        } catch (Exception ex) {
+            blackList.add(className);    // This instance need not autowired.
+        }
+    }
+
+    @Override
+    public void autowire(Object instance, DexClassLoader classLoader) {
+        String className = instance.getClass().getName();
+        try {
+            if (!blackList.contains(className)) {
+                ISyringe autowiredHelper = classCache.get(className);
+                if (null == autowiredHelper) {  // No cache.
+                    autowiredHelper = (ISyringe) classLoader.loadClass(instance.getClass().getName() + SUFFIX_AUTOWIRED).getConstructor().newInstance();
                 }
                 autowiredHelper.inject(instance);
                 classCache.put(className, autowiredHelper);

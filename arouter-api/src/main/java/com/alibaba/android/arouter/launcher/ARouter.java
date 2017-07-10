@@ -147,6 +147,13 @@ public final class ARouter {
     }
 
     /**
+     * Inject params and services from the classloader of plugin
+     */
+    public void inject(Object thiz,DexClassLoader classLoader) {
+        _ARouter.inject(thiz,classLoader);
+    }
+
+    /**
      * Build the roadmap, draw a postcard.
      *
      * @param path Where you go.

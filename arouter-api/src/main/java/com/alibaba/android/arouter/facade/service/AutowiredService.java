@@ -2,6 +2,8 @@ package com.alibaba.android.arouter.facade.service;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
 
+import dalvik.system.DexClassLoader;
+
 /**
  * Service for autowired.
  *
@@ -16,4 +18,6 @@ public interface AutowiredService extends IProvider {
      * @param instance the instance who need autowired.
      */
     void autowire(Object instance);
+
+    void autowire(Object instance, DexClassLoader classLoader);
 }

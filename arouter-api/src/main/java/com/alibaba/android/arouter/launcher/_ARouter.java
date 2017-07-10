@@ -182,6 +182,13 @@ final class _ARouter {
         }
     }
 
+    static void inject(Object thiz,DexClassLoader classLoader) {
+        AutowiredService autowiredService = ((AutowiredService) ARouter.getInstance().build("/arouter/service/autowired").navigation());
+        if (null != autowiredService) {
+            autowiredService.autowire(thiz,classLoader);
+        }
+    }
+
     /**
      * Build postcard by path and default group
      */
