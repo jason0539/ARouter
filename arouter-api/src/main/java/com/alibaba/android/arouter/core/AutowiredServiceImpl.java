@@ -10,8 +10,6 @@ import com.alibaba.android.arouter.facade.template.ISyringe;
 import java.util.ArrayList;
 import java.util.List;
 
-import dalvik.system.DexClassLoader;
-
 import static com.alibaba.android.arouter.utils.Consts.SUFFIX_AUTOWIRED;
 
 /**
@@ -50,7 +48,7 @@ public class AutowiredServiceImpl implements AutowiredService {
     }
 
     @Override
-    public void autowire(Object instance, DexClassLoader classLoader) {
+    public void autowire(Object instance, ClassLoader classLoader) {
         String className = instance.getClass().getName();
         try {
             if (!blackList.contains(className)) {

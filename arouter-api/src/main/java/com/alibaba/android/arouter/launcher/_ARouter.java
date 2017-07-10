@@ -34,8 +34,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import dalvik.system.DexClassLoader;
-
 /**
  * ARouter core (Facade patten)
  *
@@ -71,7 +69,7 @@ final class _ARouter {
         return true;
     }
 
-    protected static synchronized boolean loadClassFromApk(String apkPath, DexClassLoader classLoader){
+    protected static synchronized boolean loadClassFromApk(String apkPath, ClassLoader classLoader){
         LogisticsCenter.loadApkRouterClass(apkPath, classLoader);
         return true;
     }
@@ -182,7 +180,7 @@ final class _ARouter {
         }
     }
 
-    static void inject(Object thiz,DexClassLoader classLoader) {
+    static void inject(Object thiz,ClassLoader classLoader) {
         AutowiredService autowiredService = ((AutowiredService) ARouter.getInstance().build("/arouter/service/autowired").navigation());
         if (null != autowiredService) {
             autowiredService.autowire(thiz,classLoader);

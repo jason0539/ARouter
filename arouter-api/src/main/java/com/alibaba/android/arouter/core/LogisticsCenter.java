@@ -24,8 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import dalvik.system.DexClassLoader;
-
 import static com.alibaba.android.arouter.launcher.ARouter.logger;
 import static com.alibaba.android.arouter.utils.Consts.DOT;
 import static com.alibaba.android.arouter.utils.Consts.ROUTE_ROOT_PAKCAGE;
@@ -91,7 +89,7 @@ public class LogisticsCenter {
     /**
      * 从插件apk中加载目标类
      */
-    public synchronized static void loadApkRouterClass(String apkPath, DexClassLoader classLoader) throws HandlerException {
+    public synchronized static void loadApkRouterClass(String apkPath, ClassLoader classLoader) throws HandlerException {
         try {
             List<String> classFileNames = ClassUtils.getApkClass(apkPath, ROUTE_ROOT_PAKCAGE);
 

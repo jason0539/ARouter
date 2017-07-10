@@ -12,8 +12,6 @@ import com.alibaba.android.arouter.utils.Consts;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-import dalvik.system.DexClassLoader;
-
 /**
  * ARouter facade
  *
@@ -55,7 +53,7 @@ public final class ARouter {
      * @param apkPath 插件apk路径
        @param classLoader 插件的classloader（否则默认使用宿主classloader会加载失败）
      */
-    public static void loadClassFromApk(String apkPath, DexClassLoader classLoader){
+    public static void loadClassFromApk(String apkPath, ClassLoader classLoader){
         if (hasInit) {
             _ARouter.loadClassFromApk(apkPath, classLoader);
         }else {
@@ -149,7 +147,7 @@ public final class ARouter {
     /**
      * Inject params and services from the classloader of plugin
      */
-    public void inject(Object thiz,DexClassLoader classLoader) {
+    public void inject(Object thiz,ClassLoader classLoader) {
         _ARouter.inject(thiz,classLoader);
     }
 
