@@ -132,6 +132,13 @@ public final class Postcard extends RouteMeta {
     }
 
     /**
+     * 获取跳转activity的intent，没有找到则返回null
+     */
+    public Intent getIntent(){
+        return ARouter.getInstance().getIntent(this);
+    }
+
+    /**
      * Navigation to the route with path in postcard.
      *
      * @param context Activity and so on.

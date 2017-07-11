@@ -344,6 +344,23 @@ final class _ARouter {
         return null;
     }
 
+    protected Intent getIntent(final Postcard postcard) {
+        try {
+            LogisticsCenter.completion(postcard);
+        } catch (NoRouteFoundException ex) {
+            logger.warning(Consts.TAG, ex.getMessage());
+
+            if (debuggable()) { // Show friendly tips for user.
+                Toast.makeText(mContext, "There's no route matched!\n" +
+                        " Path = [" + postcard.getPath() + "]\n" +
+                        " Group = [" + postcard.getGroup() + "]", Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
+        return _getIntent(postcard);
+    }
+
+
     private Object _navigation(final Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
         final Context currentContext = null == context ? mContext : context;
 
@@ -407,5 +424,34 @@ final class _ARouter {
         }
 
         return null;
+    }
+
+    private Intent _getIntent(final Postcard postcard) {
+        final Context currentContext = mContext;
+
+        switch (postcard.getType()) {
+            case ACTIVITY:
+                // Build intent
+                final Intent intent = new Intent(currentContext, postcard.getDestination());
+                intent.putExtras(postcard.getExtras());
+
+                // Set flags.
+                int flags = postcard.getFlags();
+                if (-1 != flags) {
+                    intent.setFlags(flags);
+                } else if (!(currentContext instanceof Activity)) {    // Non activity, need less one flag.
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                return intent;
+            case PROVIDER:
+//                return postcard.getProvider();
+            case BOARDCAST:
+            case CONTENT_PROVIDER:
+            case FRAGMENT:
+            case METHOD:
+            case SERVICE:
+            default:
+                return null;
+        }
     }
 }

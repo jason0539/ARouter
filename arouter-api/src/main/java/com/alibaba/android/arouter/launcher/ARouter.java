@@ -2,6 +2,7 @@ package com.alibaba.android.arouter.launcher;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 import com.alibaba.android.arouter.exception.InitException;
@@ -201,5 +202,9 @@ public final class ARouter {
      */
     public Object navigation(Context mContext, Postcard postcard, int requestCode, NavigationCallback callback) {
         return _ARouter.getInstance().navigation(mContext, postcard, requestCode, callback);
+    }
+
+    public Intent getIntent(Postcard postcard) {
+        return _ARouter.getInstance().getIntent(postcard);
     }
 }

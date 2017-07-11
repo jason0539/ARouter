@@ -60,9 +60,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ARouter.init(getApplication());
                 break;
             case R.id.normalNavigation:
-                ARouter.getInstance()
+                Intent intent = ARouter.getInstance()
                         .build("/test/activity2")
-                        .navigation();
+                        .getIntent();
+                startActivity(intent);
                 break;
             case R.id.normalNavigationWithParams:
                 // ARouter.getInstance()
