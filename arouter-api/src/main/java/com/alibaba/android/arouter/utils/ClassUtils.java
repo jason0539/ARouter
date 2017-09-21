@@ -96,7 +96,8 @@ public class ClassUtils {
         DexFile dexfile = null;
 
         try {
-            if (path.endsWith(EXTRACTED_SUFFIX)) {
+            //5.0以下机型原生不支持Multidex，需要使用该方式加载apk文件（参考Multidex实现）
+            if (!isVMMultidexCapable()) {
                 //NOT use new DexFile(path), because it will throw "permission error in /data/dalvik-cache"
                 dexfile = DexFile.loadDex(path, path + ".tmp", 0);
             } else {
