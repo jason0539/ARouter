@@ -344,7 +344,7 @@ final class _ARouter {
         return null;
     }
 
-    protected Intent getIntent(final Postcard postcard) {
+    protected Intent getIntent(Context activity, final Postcard postcard) {
         try {
             LogisticsCenter.completion(postcard);
         } catch (NoRouteFoundException ex) {
@@ -357,7 +357,7 @@ final class _ARouter {
             }
             return null;
         }
-        return _getIntent(postcard);
+        return _getIntent(activity, postcard);
     }
 
 
@@ -426,8 +426,8 @@ final class _ARouter {
         return null;
     }
 
-    private Intent _getIntent(final Postcard postcard) {
-        final Context currentContext = mContext;
+    private Intent _getIntent(Context context, final Postcard postcard) {
+        final Context currentContext = null == context ? mContext : context;
 
         switch (postcard.getType()) {
             case ACTIVITY:

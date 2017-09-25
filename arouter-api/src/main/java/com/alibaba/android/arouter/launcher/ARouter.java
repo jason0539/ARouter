@@ -204,7 +204,7 @@ public final class ARouter {
         return _ARouter.getInstance().navigation(mContext, postcard, requestCode, callback);
     }
 
-    public Intent getIntent(Postcard postcard) {
-        return _ARouter.getInstance().getIntent(postcard);
+    public Intent getIntent(Context activity, Postcard postcard) {
+        return _ARouter.getInstance().getIntent(activity, postcard);
     }
 }

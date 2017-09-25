@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.normalNavigation:
                 Intent intent = ARouter.getInstance()
                         .build("/test/activity2")
-                        .getIntent();
+                        .getIntent(this);
                 startActivity(intent);
                 break;
             case R.id.normalNavigationWithParams:
