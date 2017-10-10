@@ -24,7 +24,10 @@ import com.alibaba.android.arouter.facade.service.AutowiredService;
 import com.alibaba.android.arouter.facade.service.DegradeService;
 import com.alibaba.android.arouter.facade.service.InterceptorService;
 import com.alibaba.android.arouter.facade.service.PathReplaceService;
+import com.alibaba.android.arouter.facade.template.IInterceptorGroup;
 import com.alibaba.android.arouter.facade.template.ILogger;
+import com.alibaba.android.arouter.facade.template.IProviderGroup;
+import com.alibaba.android.arouter.facade.template.IRouteGroup;
 import com.alibaba.android.arouter.thread.DefaultPoolExecutor;
 import com.alibaba.android.arouter.utils.Consts;
 import com.alibaba.android.arouter.utils.DefaultLogger;
@@ -66,11 +69,6 @@ final class _ARouter {
         // if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
         //     application.registerActivityLifecycleCallbacks(new AutowiredLifecycleCallback());
         // }
-        return true;
-    }
-
-    protected static synchronized boolean loadClassFromApk(String apkPath, ClassLoader classLoader){
-        LogisticsCenter.loadApkRouterClass(apkPath, classLoader);
         return true;
     }
 
@@ -453,5 +451,17 @@ final class _ARouter {
             default:
                 return null;
         }
+    }
+
+    public void loadIntoRoutes(IRouteGroup iRouteGroup) {
+        LogisticsCenter.loadIntoRoutes(iRouteGroup);
+    }
+
+    public void loadIntonterceptors(IInterceptorGroup iInterceptorGroup){
+        LogisticsCenter.loadIntoInterceptors(iInterceptorGroup);
+    }
+
+    public void loadIntoProviders(IProviderGroup iProviderGroup){
+        LogisticsCenter.loadIntoProviders(iProviderGroup);
     }
 }

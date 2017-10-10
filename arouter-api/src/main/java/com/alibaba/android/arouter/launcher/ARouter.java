@@ -8,7 +8,10 @@ import android.net.Uri;
 import com.alibaba.android.arouter.exception.InitException;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.facade.callback.NavigationCallback;
+import com.alibaba.android.arouter.facade.template.IInterceptorGroup;
 import com.alibaba.android.arouter.facade.template.ILogger;
+import com.alibaba.android.arouter.facade.template.IProviderGroup;
+import com.alibaba.android.arouter.facade.template.IRouteGroup;
 import com.alibaba.android.arouter.utils.Consts;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -46,19 +49,6 @@ public final class ARouter {
             }
 
             _ARouter.logger.info(Consts.TAG, "ARouter init over.");
-        }
-    }
-
-    /**
-     * 加载插件apk中的路由
-     * @param apkPath 插件apk路径
-       @param classLoader 插件的classloader（否则默认使用宿主classloader会加载失败）
-     */
-    public static void loadClassFromApk(String apkPath, ClassLoader classLoader){
-        if (hasInit) {
-            _ARouter.loadClassFromApk(apkPath, classLoader);
-        }else {
-            throw new RuntimeException("加载插件apk路由之前，请先初始化路由框架");
         }
     }
 
@@ -206,5 +196,17 @@ public final class ARouter {
 
     public Intent getIntent(Context activity, Postcard postcard) {
         return _ARouter.getInstance().getIntent(activity, postcard);
+    }
+
+    public void loadIntoRoutes(IRouteGroup iRouteGroup) {
+        _ARouter.getInstance().loadIntoRoutes(iRouteGroup);
+    }
+
+    public void loadIntonterceptors(IInterceptorGroup iInterceptorGroup){
+        _ARouter.getInstance().loadIntonterceptors(iInterceptorGroup);
+    }
+
+    public void loadIntoProviders(IProviderGroup iProviderGroup){
+        _ARouter.getInstance().loadIntoProviders(iProviderGroup);
     }
 }
