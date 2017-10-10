@@ -19,6 +19,7 @@ import com.alibaba.android.arouter.utils.Consts;
 import com.alibaba.android.arouter.utils.MapUtils;
 import com.alibaba.android.arouter.utils.TextUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,7 +97,21 @@ public class LogisticsCenter {
             for (String className : classFileNames) {
                 if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
                     // This one of root elements, load root.
-                    ((IRouteRoot) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(Warehouse.groupsIndex);
+                    // completion方法初次使用group时加载该group的所有路由到Warehouse.routes中，之后加载逻辑不会重复
+                    // 由于插件中可能存在相同group的路由，导致这部分路由没有加载到Warehouse.routes中
+                    // 所以这里在把插件的所有路由手动加载到Warehouse.routes中，逻辑同completion
+                    // 由于非独立插件的classLoader的父类是宿主classLoader，导致相同group的所生成的IRouteGroup类名相同，
+                    // 所以在这里加载使用默认classLoader加载出来的是父类的IRouteGroup，依然无法加载插件中的所有路由
+                    // 所以这里传入的classLoader在外部自定义过(如果要加载的class是路由生成的类，则不走双亲委托的加载逻辑)
+                    // todo 由于耦合了classloader的加载逻辑，这部分逻辑需要放到SDK外，由业务方完成
+                    Map<String, Class<? extends IRouteGroup>> tempGroupsIndex = new HashMap<>();
+                    ((IRouteRoot) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(tempGroupsIndex);
+                    for (String groupString : tempGroupsIndex.keySet()) {
+                        Class<? extends IRouteGroup> tempRouteClass = tempGroupsIndex.get(groupString);
+                        Class<? extends IRouteGroup> pluginRouteClass = (Class<? extends IRouteGroup>) classLoader.loadClass(tempRouteClass.getName());
+                        IRouteGroup iGroupInstance = pluginRouteClass.getConstructor().newInstance();
+                        iGroupInstance.loadInto(Warehouse.routes);
+                    }
                 } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + DOT + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTORS)) {
                     // Load interceptorMeta
                     ((IInterceptorGroup) (classLoader.loadClass(className).getConstructor().newInstance())).loadInto(Warehouse.interceptorsIndex);
