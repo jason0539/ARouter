@@ -317,8 +317,8 @@ public class RouteProcessor extends AbstractProcessor {
                             routeMeta.getGroup().toLowerCase());
                 }
 
-                // Generate groups
-                String groupFileName = NAME_OF_GROUP + groupName;
+                // Generate groups(ARouter$$Group$$moduleName$$groupName.class)
+                String groupFileName = NAME_OF_GROUP + moduleName + SEPARATOR + groupName;
                 JavaFile.builder(PACKAGE_OF_GENERATE_FILE,
                         TypeSpec.classBuilder(groupFileName)
                                 .addJavadoc(WARNING_TIPS)
