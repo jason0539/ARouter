@@ -216,7 +216,7 @@ public class RouteProcessor extends AbstractProcessor {
             for (Element element : routeElements) {
                 TypeMirror tm = element.asType();
                 Route route = element.getAnnotation(Route.class);
-                RouteMeta routeMete = null;
+                RouteMeta routeMeta = null;
 
                 if (types.isSubtype(tm, type_Activity)) {                 // Activity
                     logger.info(">>> Found activity route: " + tm.toString() + " <<<");
@@ -230,19 +230,21 @@ public class RouteProcessor extends AbstractProcessor {
                             paramsType.put(StringUtils.isEmpty(paramConfig.name()) ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
                         }
                     }
-                    routeMete = new RouteMeta(route, element, RouteType.ACTIVITY, paramsType);
+                    routeMeta = new RouteMeta(route, element, RouteType.ACTIVITY, paramsType);
                 } else if (types.isSubtype(tm, iProvider)) {         // IProvider
                     logger.info(">>> Found provider route: " + tm.toString() + " <<<");
-                    routeMete = new RouteMeta(route, element, RouteType.PROVIDER, null);
+                    routeMeta = new RouteMeta(route, element, RouteType.PROVIDER, null);
                 } else if (types.isSubtype(tm, type_Service)) {           // Service
                     logger.info(">>> Found service route: " + tm.toString() + " <<<");
-                    routeMete = new RouteMeta(route, element, RouteType.parse(SERVICE), null);
+                    routeMeta = new RouteMeta(route, element, RouteType.parse(SERVICE), null);
                 } else if (types.isSubtype(tm, fragmentTm) || types.isSubtype(tm, fragmentTmV4)) {
                     logger.info(">>> Found fragment route: " + tm.toString() + " <<<");
-                    routeMete = new RouteMeta(route, element, RouteType.parse(FRAGMENT), null);
+                    routeMeta = new RouteMeta(route, element, RouteType.parse(FRAGMENT), null);
+                } else {
+                    throw new RuntimeException("ARouter::Compiler >>> Found unsupported class type, type = [" + types.toString() + "].");
                 }
 
-                categories(routeMete);
+                categories(routeMeta);
                 // if (StringUtils.isEmpty(moduleName)) {   // Hasn't generate the module name.
                 //     moduleName = ModuleUtils.generateModuleName(element, logger);
                 // }
@@ -283,7 +285,6 @@ public class RouteProcessor extends AbstractProcessor {
                                     // This interface extend the IProvider, so it can be used for mark provider
                                     loadIntoMethodOfProviderBuilder.addStatement(
                                             "providers.put($S, $T.build($T." + routeMeta.getType() + ", $T.class, $S, $S, null, " + routeMeta.getPriority() + ", " + routeMeta.getExtra() + "))",
-                                            // tm.toString().substring(tm.toString().lastIndexOf(".") + 1),    // Spite unuseless name
                                             tm.toString(),    // So stupid, will duplicate only save class name.
                                             routeMetaCn,
                                             routeTypeCn,
@@ -333,7 +334,7 @@ public class RouteProcessor extends AbstractProcessor {
             }
 
             if (MapUtils.isNotEmpty(rootMap)) {
-                // Generate root meta by group name, it must be generated before root, then I can findout the class of group.
+                // Generate root meta by group name, it must be generated before root, then I can find out the class of group.
                 for (Map.Entry<String, String> entry : rootMap.entrySet()) {
                     loadIntoMethodOfRootBuilder.addStatement("routes.put($S, $T.class)", entry.getKey(), ClassName.get(PACKAGE_OF_GENERATE_FILE, entry.getValue()));
                 }

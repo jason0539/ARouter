@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.alibaba.arouter'
 
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
@@ -37,8 +38,9 @@ android {
         }
 
         release {
-            minifyEnabled false
-            signingConfig null
+            minifyEnabled true
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -52,7 +54,8 @@ dependencies {
 
     annotationProcessor project(':arouter-compiler')
     compile project(':arouter-api')
-    compile project(':test-module-1')
+    compile project(':module-java')
+    compile project(':module-kotlin')
     compile project(':arouter-annotation')
 
     compile 'com.alibaba:fastjson:1.2.9'
